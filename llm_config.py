@@ -20,11 +20,11 @@ load_dotenv()
 # ============================================================
 
 PROVIDERS = {
-    "deepseek": {
-        "api_key_env": "DEEPSEEK_API_KEY",
-        "base_url": "https://api.deepseek.com",
-        "model": "deepseek-chat",          # deepseek-chat / deepseek-reasoner
-    },
+    # "deepseek": {
+    #     "api_key_env": "DEEPSEEK_API_KEY",
+    #     "base_url": "https://api.deepseek.com",
+    #     "model": "deepseek-chat",          # deepseek-chat / deepseek-reasoner
+    # },
     "zhipu": {
         "api_key_env": "ZHIPU_API_KEY",
         "base_url": "https://open.bigmodel.cn/api/paas/v4",
