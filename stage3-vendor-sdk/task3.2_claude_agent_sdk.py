@@ -9,11 +9,14 @@ Task 3.2: Claude Agent SDK
   内置工具 = Read, Edit, Bash, Grep, Glob, WebSearch, WebFetch, Write
   MCP = Model Context Protocol，标准化的工具协议
 
-注意：Claude Agent SDK 需要额外的安装步骤，
-      具体请参考 https://github.com/anthropics/claude-agent-sdk-python
+注意：
+  - 方式一（直接 API）: 智谱/DeepSeek 暂不支持 Anthropic API 格式，
+    需要有 ANTHROPIC_API_KEY 才能运行。
+  - 方式二（Claude Agent SDK）: 同样需要 ANTHROPIC_API_KEY。
+  - 如果你暂时没有 Anthropic 的 Key，可以跳过本 Task，先学其他内容。
 
 安装依赖：
-  pip install claude-agent-sdk python-dotenv
+  pip install anthropic python-dotenv
 """
 
 import os
@@ -27,10 +30,11 @@ load_dotenv()
 # ============================================================
 
 # --- 方式一：直接使用 Claude API（推荐先学这个理解原理）---
+# 注意：需要有 ANTHROPIC_API_KEY
 
 from anthropic import Anthropic
 
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
 
 
 def simple_claude_agent(user_query: str):

@@ -14,11 +14,13 @@ Task 1.2: Tool Use 机制（结构化函数调用）
 
 import os
 import json
-from openai import OpenAI
-from dotenv import load_dotenv
+import sys
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_client, get_model_name
+
+client = get_client()
+model = get_model_name()
 
 
 # ============================================================
@@ -148,7 +150,7 @@ def run_agent_with_tools(user_query: str, max_iterations: int = 5) -> str:
 
         # 调用 LLM，传入工具定义
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=model,
             messages=messages,
             tools=TOOLS_SCHEMA,          # 关键：传入工具定义
             tool_choice="auto",          # 让 LLM 自己决定是否调用工具

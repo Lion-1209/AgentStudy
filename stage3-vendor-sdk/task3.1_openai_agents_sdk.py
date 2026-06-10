@@ -20,10 +20,20 @@ Task 3.1: OpenAI Agents SDK
 
 import os
 import asyncio
+import sys
 from agents import Agent, Runner, function_tool
 from dotenv import load_dotenv
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_provider, PROVIDERS
+
 load_dotenv()
+
+# OpenAI Agents SDK 通过环境变量读取配置
+# 设置兼容的 base_url 和 api_key，使 SDK 能用 DeepSeek/智谱
+_, provider_config = get_provider()
+os.environ["OPENAI_API_KEY"] = os.getenv(provider_config["api_key_env"])
+os.environ["OPENAI_BASE_URL"] = provider_config["base_url"]
 
 
 # ============================================================
@@ -89,7 +99,7 @@ main_agent = Agent(
 
 请用中文回答。""",
     tools=[get_weather, calculate, read_file, list_directory],
-    # model 默认使用 OPENAI_MODEL_NAME 环境变量或 gpt-4o
+    model=provider_config["model"],
 )
 
 

@@ -17,10 +17,20 @@ CrewAI 的设计哲学：
 """
 
 import os
+import sys
 from dotenv import load_dotenv
 from crewai import Agent, Task, Crew, Process
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_provider, PROVIDERS
+
 load_dotenv()
+
+# CrewAI 通过环境变量读取 LLM 配置
+_, provider_config = get_provider()
+os.environ["OPENAI_API_KEY"] = os.getenv(provider_config["api_key_env"])
+os.environ["OPENAI_API_BASE"] = provider_config["base_url"]
+os.environ["OPENAI_MODEL_NAME"] = provider_config["model"]
 
 
 # ============================================================

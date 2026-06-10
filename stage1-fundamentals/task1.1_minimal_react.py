@@ -12,17 +12,22 @@ ReAct 循环：
 安装依赖：
   pip install openai python-dotenv
 
-使用前创建 .env 文件：
-  OPENAI_API_KEY=sk-your-key-here
+使用前：
+  1. 复制 .env.example 为 .env
+  2. 填入 DEEPSEEK_API_KEY 或 ZHIPU_API_KEY（填你有的即可）
+  3. 代码会自动选择可用的 Provider
 """
 
-import os
 import re
-from openai import OpenAI
-from dotenv import load_dotenv
+import sys
+import os
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# 添加项目根目录到 path，以便导入 llm_config
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_client, get_model_name
+
+client = get_client()
+model = get_model_name()
 
 # ============================================================
 # 第一步：定义工具
@@ -148,7 +153,7 @@ def run_agent(user_query: str, max_iterations: int = 5) -> str:
 
         # 调用 LLM
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # 开发阶段用便宜模型
+            model=model,
             messages=messages,
             temperature=0,
         )

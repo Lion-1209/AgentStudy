@@ -16,12 +16,14 @@ Task 1.3: Agent 记忆机制
 import os
 import json
 import hashlib
+import sys
 from datetime import datetime
-from openai import OpenAI
-from dotenv import load_dotenv
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_client, get_model_name
+
+client = get_client()
+model = get_model_name()
 
 # 复用 Task 1.2 的工具定义
 from task1_2_tool_use import TOOLS_SCHEMA, TOOL_FUNCTIONS
@@ -203,7 +205,7 @@ class MemoryAgent:
         # 3. ReAct 循环（与 Task 1.2 相同）
         for i in range(max_iterations):
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=model,
                 messages=self.stm.get_messages(),
                 tools=TOOLS_SCHEMA,
                 tool_choice="auto",

@@ -14,13 +14,19 @@ Task 2.1: LangChain 基础 Agent
 """
 
 import os
+import sys
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_provider, PROVIDERS
+
 load_dotenv()
+
+_, provider_config = get_provider()
 
 # ============================================================
 # 工具定义 — 用 @tool 装饰器，比手写 schema 简洁很多
@@ -66,7 +72,9 @@ def read_file(file_path: str) -> str:
 def create_agent():
     # 1. LLM
     llm = ChatOpenAI(
-        model="gpt-4o-mini",
+        model=provider_config["model"],
+        base_url=provider_config["base_url"],
+        api_key=os.getenv(provider_config["api_key_env"]),
         temperature=0,
     )
 

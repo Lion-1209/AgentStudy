@@ -17,11 +17,14 @@ Task 4.2: 从零实现 Multi-Agent（不用框架）
 
 import os
 import json
+import sys
 from openai import OpenAI
-from dotenv import load_dotenv
 
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_client, get_model_name
+
+client = get_client()
+model = get_model_name()
 
 
 # ============================================================
@@ -31,10 +34,10 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 class SimpleAgent:
     """最小 Agent：名字 + system prompt + LLM 调用"""
 
-    def __init__(self, name: str, system_prompt: str, model: str = "gpt-4o-mini"):
+    def __init__(self, name: str, system_prompt: str, model: str = None):
         self.name = name
         self.system_prompt = system_prompt
-        self.model = model
+        self.model = model or get_model_name()
 
     def run(self, user_input: str) -> str:
         """执行一次 LLM 调用"""

@@ -10,6 +10,7 @@ Task 2.2: LangChain 多工具 Agent
 
 import os
 import json
+import sys
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from langchain_openai import ChatOpenAI
@@ -18,7 +19,11 @@ from langchain.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_provider, PROVIDERS
+
 load_dotenv()
+_, provider_config = get_provider()
 
 
 # ============================================================
@@ -117,7 +122,12 @@ class AnalysisResult(BaseModel):
 # ============================================================
 
 def create_multi_tool_agent():
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    llm = ChatOpenAI(
+        model=provider_config["model"],
+        base_url=provider_config["base_url"],
+        api_key=os.getenv(provider_config["api_key_env"]),
+        temperature=0,
+    )
     tools = [get_weather, calculate, list_directory, read_file, count_lines]
 
     prompt = ChatPromptTemplate.from_messages([

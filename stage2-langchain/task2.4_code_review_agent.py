@@ -14,14 +14,24 @@ Task 2.4: LangGraph 实战 — 代码审查 Agent
 """
 
 import os
+import sys
 from typing import TypedDict
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 
-load_dotenv()
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from llm_config import get_provider, PROVIDERS
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+load_dotenv()
+_, provider_config = get_provider()
+
+llm = ChatOpenAI(
+    model=provider_config["model"],
+    base_url=provider_config["base_url"],
+    api_key=os.getenv(provider_config["api_key_env"]),
+    temperature=0,
+)
 
 
 # ============================================================
