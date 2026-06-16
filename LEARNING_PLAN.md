@@ -1,6 +1,6 @@
 # AI Agent 开发学习计划
 
-> 目标：从零掌握 Agent 开发，4 个阶段，约 10-14 周
+> 目标：从零掌握 Agent 开发，5 个阶段，约 14-19 周
 > 前置条件：Python 基础、理解 LLM vs Agent 区别
 
 ---
@@ -8,24 +8,43 @@
 ## 阶段总览
 
 ```
-阶段1: 理解本质 ──────── smolagents + 从零实现 ReAct 循环（1-2 周）
+阶段1: 理解本质 ──────── smolagents + 从零实现 ReAct 循环（2 周）
   ↓
 阶段2: 市场主流 ──────── LangChain + LangGraph（3-4 周）
   ↓
 阶段3: 未来方向 ──────── OpenAI Agents SDK + Claude Agent SDK（2-3 周）
   ↓
 阶段4: 进阶实战 ──────── Multi-Agent + 完整项目（3-4 周）
+  ↓
+阶段5: 进阶主题 ──────── Prompt工程 + 可观测性 + RAG + MCP（4-6 周）
 ```
+
+## 如何使用本计划
+
+每个阶段都有三类学习材料：
+
+| 类型 | 作用 | 何时读 |
+|------|------|--------|
+| **概念文档**（`docs/stageN/`） | 建立"为什么"和心智模型 | 写代码**前**先读，建立认知 |
+| **代码 Task**（`stageN-xxx/`） | 动手实现，掌握"怎么做" | 读完概念文档后动手做 |
+| **API 参考**（`*_REFERENCE.md`） | 查阅手册 | 写代码卡住时查 |
+
+**推荐节奏：** 先读该 Task 对应的概念文档 → 再看代码 Task → 边读边跑 → 用检查清单自测。
 
 ---
 
-## 阶段 1：理解 Agent 本质（1-2 周）
+## 阶段 1：理解 Agent 本质（2 周）
 
 > 目标：不依赖任何框架，手动实现 Agent 核心循环，真正理解 Agent 是什么
 
 ### 理论阅读（并行）
 - [ ] [Anthropic: Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 - [ ] [OpenAI: A Practical Guide to Building Agents (PDF)](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf)
+
+### 配套概念文档（写代码前先读）
+- [ ] [什么是 Agent：无状态函数如何获得自主性](docs/stage1/what-is-agent.md)
+- [ ] [为什么需要 Function Calling](docs/stage1/why-function-calling.md)
+- [ ] [记忆与上下文](docs/stage1/memory-and-context.md)
 
 ---
 
@@ -40,6 +59,13 @@
 - 不需要任何框架，核心逻辑不到 50 行
 - 理解 Agent = LLM + Tool Use + Loop
 
+**完成检查清单：**
+- [ ] 能说清楚 Agent 四要素（LLM/Tool/Loop/Memory）各自的作用吗？
+- [ ] 能解释为什么去掉 Loop 就退化成 chatbot 吗？
+- [ ] 能手写一个最小 ReAct 循环（不看书）吗？
+
+> 💡 可观测性提示：代码里的 `print` 就是最原始的 trace。体会一下——没有这些 print，调试时你完全不知道 Agent 在干什么。
+
 ---
 
 ### Task 1.2：实现 Tool Use 机制
@@ -53,6 +79,14 @@
 - LLM 输出结构化的工具调用请求 → 解析 → 执行 → 返回结果
 - 工具描述（description）的质量直接决定 Agent 能否正确选择工具
 
+**完成检查清单：**
+- [ ] 能说清楚 Function Calling 和文本解析的本质区别吗？
+- [ ] `tool_call_id` 为什么必须关联？不关联会怎样？
+- [ ] `tool_choice` 的 4 种模式分别用在什么场景？
+- [ ] 能不看书手写一个带工具的 Agent 循环吗？
+
+> 💡 可观测性提示：对比 Task 1.1，你会明显感到 Function Calling 比"正则解析文本"可靠得多。可观测性的第一步，就是用可靠的机制替代脆弱的机制。
+
 ---
 
 ### Task 1.3：给 Agent 加上记忆
@@ -65,6 +99,13 @@
 - 短期记忆：维护 message 列表，超出 token 限制时需要截断/摘要
 - 长期记忆：把重要信息持久化到文件/数据库，下次对话可检索
 - Token 管理是 Agent 开发中非常实际的问题
+
+**完成检查清单：**
+- [ ] 能解释为什么 LLM 本身没有记忆、是代码在维护记忆吗？
+- [ ] 短期记忆和长期记忆的本质区别是什么（用 RAM/Flash 类比）？
+- [ ] 知道为什么记忆需要"取舍"，有哪几种策略吗？
+
+> 💡 可观测性提示：长期记忆的检索质量很难直接判断。到阶段5 学可观测性后，你可以追踪"每次检索召回了哪些记忆"，评估检索质量。
 
 ---
 
@@ -83,6 +124,10 @@
 
 **输出：** 写一份笔记，记录你的实现和 smolagents 的 3 个核心区别
 
+**完成检查清单：**
+- [ ] 能说出 smolagents 比你的实现多了哪些工程化能力吗？
+- [ ] 理解了"框架 = 你手写的内核 + 工程化外壳"吗？
+
 ---
 
 ## 阶段 2：LangChain + LangGraph（3-4 周）
@@ -92,6 +137,13 @@
 ### 理论阅读（并行）
 - [ ] [LangChain 官方教程](https://python.langchain.com/docs/tutorials/)
 - [ ] [LangGraph 官方教程](https://langchain-ai.github.io/langgraph/tutorials/)
+
+### 配套概念文档（写代码前先读）
+- [ ] [抽象的权衡：为什么 LangChain 这么多层](docs/stage2/abstraction-tradeoffs.md)
+- [ ] [状态机思维：为什么图比 if-else 更适合 Agent](docs/stage2/state-machine-thinking.md)
+
+### 配套 API 参考
+- [ ] [LANGCHAIN_REFERENCE.md](LANGCHAIN_REFERENCE.md)（写代码卡住时查）
 
 ---
 
@@ -156,6 +208,10 @@
 
 > 目标：掌握 OpenAI Agents SDK 和 Claude Agent SDK，理解"去框架化"趋势
 
+### 配套概念文档（写代码前先读）
+- [ ] [为什么框架会衰落：抽象层价值的变迁](docs/stage3/why-frameworks-fade.md)
+- [ ] [Agent 循环的本质：所有 SDK 背后的共同内核](docs/stage3/agent-loop-essence.md)
+
 ---
 
 ### Task 3.1：OpenAI Agents SDK 基础
@@ -206,6 +262,10 @@
 ## 阶段 4：进阶实战（3-4 周）
 
 > 目标：掌握 Multi-Agent 协作，完成一个完整的项目
+
+### 配套概念文档（写代码前先读）
+- [ ] [多 Agent 的本质：分工协作](docs/stage4/division-of-labor.md)
+- [ ] [何时用多 Agent：单 vs 多的决策](docs/stage4/when-multi-when-single.md)
 
 ---
 
@@ -264,6 +324,115 @@
 - LangGraph（推荐，适合这种有明确步骤的流水线）
 - OpenAI Agents SDK
 - CrewAI
+
+---
+
+## 阶段 5：进阶主题（4-6 周）
+
+> 目标：补全 Agent 开发的关键技术能力——Prompt 工程、可观测性、RAG、MCP
+> 顺序依据：Prompt 影响后续所有质量 → 可观测性先学会才能调试 RAG → RAG → MCP 进阶
+
+### 配套概念文档（写代码前先读）
+- [ ] [Prompt 即编程](docs/stage5/prompt-as-programming.md)
+- [ ] [可观测性：黑盒系统的控制论](docs/stage5/observability-control.md)
+- [ ] [RAG 的本质：给无状态函数注入外部知识](docs/stage5/rag-knowledge-injection.md)
+- [ ] [MCP 的本质：标准化降低协作成本](docs/stage5/mcp-standardization.md)
+
+---
+
+### Task 5.1：Prompt Engineering 专项（3-5 天）
+
+**目标：** 系统掌握写好 prompt 的技巧，理解 prompt 是 Agent 质量的最大变量。
+
+**关键知识点：**
+- Few-shot prompting（给示例引导格式）
+- Chain of Thought（思维链）
+- 结构化输出（JSON mode / Pydantic）
+- Role/Persona prompting
+- Prompt 模板管理与版本迭代方法论
+- Prompt Injection 防御
+
+**练习：** 给同一个任务写 3 版 prompt，对比效果差异
+
+**完成检查清单：**
+- [ ] 能说清楚"prompt 是程序"而不是"聊天话术"吗？
+- [ ] 知道如何用测试集系统调优 prompt 吗？
+- [ ] 理解为什么 prompt 工程的本质是"消除模糊性"吗？
+
+---
+
+### Task 5.2：可观测性与评估（3-5 天）
+
+**目标：** 学会"看见"Agent 内部，没有 trace 就没法调试 Agent。
+
+**关键知识点：**
+- Tracing 是什么、为什么 Agent 必须有
+- 接入 LangSmith（有免费额度），追踪前面 Task 2.2 的 Agent
+- 分析 trace：token 用量、延迟、工具调用链
+- Evaluation（评估）：定义评估指标，自动评估 Agent 输出
+- Langfuse（开源自托管替代）
+
+**练习：** 给 Task 2.2 的 Agent 接入 LangSmith，截图 trace 分析瓶颈
+
+**完成检查清单：**
+- [ ] 能解释为什么 Agent 比传统软件更需要可观测性吗？
+- [ ] 知道 Tracing/Metrics/Evaluation 三个层次的差异吗？
+- [ ] 能为你的 Agent 设计一个评估方案吗？
+
+---
+
+### Task 5.3：RAG 基础（1-1.5 周）
+
+**目标：** 从零搭建一个能问答自己文档的 RAG 系统。
+
+**关键知识点：**
+- 文本加载与分块（chunking）策略
+- Embedding（向量化）
+- 向量数据库（ChromaDB，本地免费）
+- 相似度检索（余弦相似度）
+- 检索 + 生成：把检索片段塞进 prompt
+- 进阶：Reranking、chunk 大小调优
+
+> ⚠️ 环境提示：DeepSeek 无 embedding API，用**智谱 embedding-3** 或开源 **bge-small-zh**（本地免费）
+
+**完成检查清单：**
+- [ ] 能说清楚 RAG 的四阶段流程吗？
+- [ ] 理解"检索质量决定 RAG 上限"吗？
+- [ ] 知道为什么知识用 RAG、能力用 fine-tune 吗？
+
+---
+
+### Task 5.4：RAG Agent（4-6 天）
+
+**目标：** 把检索作为工具集成进 Agent，让 Agent 自主决定何时查文档。
+
+**关键知识点：**
+- 把"检索文档"封装成一个工具
+- Agent 根据问题判断要不要检索
+- 处理"检索不到"的兜底情况
+- 和 Task 2.2 的多工具 Agent 融合
+
+**练习：** 做一个"私人文档问答 Agent"——喂给它你的笔记/文档，它能回答相关问题
+
+---
+
+### Task 5.5：MCP 实战（1-1.5 周）
+
+**目标：** 掌握 2025-2026 最重要的 Agent 协议，能写自己的 MCP server。
+
+**关键知识点：**
+- MCP（Model Context Protocol）是什么——标准化的工具协议
+- MCP 架构：Host / Client / Server
+- 用现成的 MCP server（filesystem、fetch 等）
+- 写一个自己的 MCP server（暴露自定义工具）
+- 把 MCP server 接入你的 Agent
+
+**练习：** 写一个 MCP server 暴露"读项目文件"工具，接进 Agent
+
+**完成检查清单：**
+- [ ] 能解释 MCP 解决的 N×M 问题吗？
+- [ ] 理解 MCP 和 Function Calling 是不同层次吗？
+- [ ] 能写一个简单的 MCP Server 并接入 Agent 吗？
 
 ---
 
